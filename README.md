@@ -3,7 +3,7 @@
 Descripción:
 Proyecto del grupo 7. Representa clientes, cuentas, dispositivos, direcciones IP, comercios y transacciones como un grafo para explorar conexiones y posibles patrones de riesgo.
 
-1)Nodos
+
 ## 1. Nodos
 |Elemento| Propiedades Claves|
 |---|---|
