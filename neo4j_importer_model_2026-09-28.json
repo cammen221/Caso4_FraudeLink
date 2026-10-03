@@ -1,0 +1,994 @@
+{
+  "version": "3.0.0",
+  "visualisation": {
+    "nodes": [
+      {
+        "id": "n:1",
+        "position": {
+          "x": -75.36052858374029,
+          "y": 34.625107727664464
+        }
+      },
+      {
+        "id": "n:2",
+        "position": {
+          "x": 99.42442316022621,
+          "y": 38.89261590518621
+        }
+      },
+      {
+        "id": "n:3",
+        "position": {
+          "x": 277.38327160510033,
+          "y": 31.00497519521793
+        }
+      },
+      {
+        "id": "n:4",
+        "position": {
+          "x": 131.6069111465525,
+          "y": 158.6263321411498
+        }
+      },
+      {
+        "id": "n:5",
+        "position": {
+          "x": -25.836807836062135,
+          "y": 161.59622245246123
+        }
+      }
+    ]
+  },
+  "dataModel": {
+    "version": "3.0.0",
+    "graphSchemaRepresentation": {
+      "version": "1.0.0",
+      "graphSchema": {
+        "nodeLabels": [
+          {
+            "$id": "nl:1",
+            "token": "Cliente",
+            "properties": [
+              {
+                "$id": "p:1",
+                "token": "cliente_id",
+                "type": {
+                  "type": "string"
+                },
+                "nullable": true
+              }
+            ]
+          },
+          {
+            "$id": "nl:2",
+            "token": "Cuenta",
+            "properties": [
+              {
+                "$id": "p:2",
+                "token": "cuenta_id",
+                "type": {
+                  "type": "string"
+                },
+                "nullable": true
+              }
+            ]
+          },
+          {
+            "$id": "nl:3",
+            "token": "Dispositivo",
+            "properties": [
+              {
+                "$id": "p:3",
+                "token": "dispositivo_id",
+                "type": {
+                  "type": "string"
+                },
+                "nullable": true
+              }
+            ]
+          },
+          {
+            "$id": "nl:4",
+            "token": "Comercio",
+            "properties": [
+              {
+                "$id": "p:4",
+                "token": "comercio_id",
+                "type": {
+                  "type": "string"
+                },
+                "nullable": true
+              }
+            ]
+          },
+          {
+            "$id": "nl:5",
+            "token": "IP",
+            "properties": [
+              {
+                "$id": "p:5",
+                "token": "ip_address",
+                "type": {
+                  "type": "string"
+                },
+                "nullable": true
+              }
+            ]
+          }
+        ],
+        "relationshipTypes": [
+          {
+            "$id": "rt:1",
+            "token": "Posee",
+            "properties": [
+              {
+                "$id": "p:6",
+                "token": "cliente_id",
+                "type": {
+                  "type": "string"
+                },
+                "nullable": true
+              },
+              {
+                "$id": "p:7",
+                "token": "cuenta_id",
+                "type": {
+                  "type": "string"
+                },
+                "nullable": true
+              },
+              {
+                "$id": "p:21",
+                "token": "fecha",
+                "type": {
+                  "type": "datetime"
+                },
+                "nullable": true
+              }
+            ]
+          },
+          {
+            "$id": "rt:2",
+            "token": "Usa_dispositivo",
+            "properties": [
+              {
+                "$id": "p:8",
+                "token": "cuenta_id",
+                "type": {
+                  "type": "string"
+                },
+                "nullable": true
+              },
+              {
+                "$id": "p:9",
+                "token": "dispositivo_id",
+                "type": {
+                  "type": "string"
+                },
+                "nullable": true
+              },
+              {
+                "$id": "p:22",
+                "token": "fecha",
+                "type": {
+                  "type": "datetime"
+                },
+                "nullable": true
+              }
+            ]
+          },
+          {
+            "$id": "rt:3",
+            "token": "Conecta_desde",
+            "properties": [
+              {
+                "$id": "p:10",
+                "token": "cuenta_id",
+                "type": {
+                  "type": "string"
+                },
+                "nullable": true
+              },
+              {
+                "$id": "p:11",
+                "token": "ip_address",
+                "type": {
+                  "type": "string"
+                },
+                "nullable": true
+              },
+              {
+                "$id": "p:12",
+                "token": "fecha",
+                "type": {
+                  "type": "datetime"
+                },
+                "nullable": true
+              }
+            ]
+          },
+          {
+            "$id": "rt:4",
+            "token": "Paga_en",
+            "properties": [
+              {
+                "$id": "p:14",
+                "token": "cuenta_id",
+                "type": {
+                  "type": "string"
+                },
+                "nullable": true
+              },
+              {
+                "$id": "p:15",
+                "token": "comercio_id",
+                "type": {
+                  "type": "string"
+                },
+                "nullable": true
+              },
+              {
+                "$id": "p:16",
+                "token": "monto",
+                "type": {
+                  "type": "float"
+                },
+                "nullable": true
+              },
+              {
+                "$id": "p:17",
+                "token": "fecha",
+                "type": {
+                  "type": "datetime"
+                },
+                "nullable": true
+              }
+            ]
+          },
+          {
+            "$id": "rt:5",
+            "token": "Transfiere_a",
+            "properties": [
+              {
+                "$id": "p:13",
+                "token": "cuenta_origen",
+                "type": {
+                  "type": "string"
+                },
+                "nullable": true
+              },
+              {
+                "$id": "p:18",
+                "token": "cuenta_destino",
+                "type": {
+                  "type": "string"
+                },
+                "nullable": true
+              },
+              {
+                "$id": "p:19",
+                "token": "monto",
+                "type": {
+                  "type": "float"
+                },
+                "nullable": true
+              },
+              {
+                "$id": "p:20",
+                "token": "fecha",
+                "type": {
+                  "type": "datetime"
+                },
+                "nullable": true
+              }
+            ]
+          }
+        ],
+        "nodeObjectTypes": [
+          {
+            "$id": "n:1",
+            "labels": [
+              {
+                "$ref": "#nl:1"
+              }
+            ]
+          },
+          {
+            "$id": "n:2",
+            "labels": [
+              {
+                "$ref": "#nl:2"
+              }
+            ]
+          },
+          {
+            "$id": "n:3",
+            "labels": [
+              {
+                "$ref": "#nl:3"
+              }
+            ]
+          },
+          {
+            "$id": "n:4",
+            "labels": [
+              {
+                "$ref": "#nl:4"
+              }
+            ]
+          },
+          {
+            "$id": "n:5",
+            "labels": [
+              {
+                "$ref": "#nl:5"
+              }
+            ]
+          }
+        ],
+        "relationshipObjectTypes": [
+          {
+            "$id": "r:1",
+            "type": {
+              "$ref": "#rt:1"
+            },
+            "from": {
+              "$ref": "#n:1"
+            },
+            "to": {
+              "$ref": "#n:2"
+            }
+          },
+          {
+            "$id": "r:2",
+            "type": {
+              "$ref": "#rt:2"
+            },
+            "from": {
+              "$ref": "#n:2"
+            },
+            "to": {
+              "$ref": "#n:3"
+            }
+          },
+          {
+            "$id": "r:3",
+            "type": {
+              "$ref": "#rt:3"
+            },
+            "from": {
+              "$ref": "#n:2"
+            },
+            "to": {
+              "$ref": "#n:5"
+            }
+          },
+          {
+            "$id": "r:4",
+            "type": {
+              "$ref": "#rt:4"
+            },
+            "from": {
+              "$ref": "#n:2"
+            },
+            "to": {
+              "$ref": "#n:4"
+            }
+          },
+          {
+            "$id": "r:5",
+            "type": {
+              "$ref": "#rt:5"
+            },
+            "from": {
+              "$ref": "#n:2"
+            },
+            "to": {
+              "$ref": "#n:2"
+            }
+          }
+        ],
+        "constraints": [
+          {
+            "$id": "c:1",
+            "name": "cliente_id_Cliente_key",
+            "constraintType": "key",
+            "entityType": "node",
+            "nodeLabel": {
+              "$ref": "#nl:1"
+            },
+            "properties": [
+              {
+                "$ref": "#p:1"
+              }
+            ]
+          },
+          {
+            "$id": "c:3",
+            "name": "dispositivo_id_Dispositivo_key",
+            "constraintType": "key",
+            "entityType": "node",
+            "nodeLabel": {
+              "$ref": "#nl:3"
+            },
+            "properties": [
+              {
+                "$ref": "#p:3"
+              }
+            ]
+          },
+          {
+            "$id": "c:2",
+            "name": "cuenta_id_Cuenta_key",
+            "constraintType": "key",
+            "entityType": "node",
+            "nodeLabel": {
+              "$ref": "#nl:2"
+            },
+            "properties": [
+              {
+                "$ref": "#p:2"
+              }
+            ]
+          },
+          {
+            "$id": "c:4",
+            "name": "comercio_id_Comercio_key",
+            "constraintType": "key",
+            "entityType": "node",
+            "nodeLabel": {
+              "$ref": "#nl:4"
+            },
+            "properties": [
+              {
+                "$ref": "#p:4"
+              }
+            ]
+          },
+          {
+            "$id": "c:5",
+            "name": "ip_address_IP_key",
+            "constraintType": "key",
+            "entityType": "node",
+            "nodeLabel": {
+              "$ref": "#nl:5"
+            },
+            "properties": [
+              {
+                "$ref": "#p:5"
+              }
+            ]
+          }
+        ],
+        "indexes": []
+      }
+    },
+    "graphSchemaExtensionsRepresentation": {
+      "nodeKeyProperties": [
+        {
+          "node": {
+            "$ref": "#n:1"
+          },
+          "keyProperties": [
+            {
+              "$ref": "#p:1"
+            }
+          ]
+        },
+        {
+          "node": {
+            "$ref": "#n:2"
+          },
+          "keyProperties": [
+            {
+              "$ref": "#p:2"
+            }
+          ]
+        },
+        {
+          "node": {
+            "$ref": "#n:3"
+          },
+          "keyProperties": [
+            {
+              "$ref": "#p:3"
+            }
+          ]
+        },
+        {
+          "node": {
+            "$ref": "#n:4"
+          },
+          "keyProperties": [
+            {
+              "$ref": "#p:4"
+            }
+          ]
+        },
+        {
+          "node": {
+            "$ref": "#n:5"
+          },
+          "keyProperties": [
+            {
+              "$ref": "#p:5"
+            }
+          ]
+        }
+      ],
+      "relationshipKeyProperties": []
+    },
+    "graphMappingRepresentation": {
+      "dataSourceSchema": {
+        "type": "local",
+        "tableSchemas": [
+          {
+            "name": "clientes.csv",
+            "expanded": true,
+            "fields": [
+              {
+                "name": "cliente_id",
+                "sample": "CLI00001",
+                "recommendedType": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          {
+            "name": "comercios.csv",
+            "expanded": true,
+            "fields": [
+              {
+                "name": "comercio_id",
+                "sample": "COM00001",
+                "recommendedType": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          {
+            "name": "conecta_desde.csv",
+            "expanded": true,
+            "fields": [
+              {
+                "name": "cuenta_id",
+                "sample": "CTA00900",
+                "recommendedType": {
+                  "type": "string"
+                }
+              },
+              {
+                "name": "ip_address",
+                "sample": "10.0.2.228",
+                "recommendedType": {
+                  "type": "string"
+                }
+              },
+              {
+                "name": "fecha",
+                "sample": "2025-10-02",
+                "recommendedType": {
+                  "type": "datetime"
+                }
+              }
+            ]
+          },
+          {
+            "name": "cuentas.csv",
+            "expanded": true,
+            "fields": [
+              {
+                "name": "cuenta_id",
+                "sample": "CTA00001",
+                "recommendedType": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          {
+            "name": "dispositivos.csv",
+            "expanded": true,
+            "fields": [
+              {
+                "name": "dispositivo_id",
+                "sample": "DIS00001",
+                "recommendedType": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          {
+            "name": "ips.csv",
+            "expanded": true,
+            "fields": [
+              {
+                "name": "ip_address",
+                "sample": "10.0.0.1",
+                "recommendedType": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          {
+            "name": "paga_en.csv",
+            "expanded": true,
+            "fields": [
+              {
+                "name": "cuenta_id",
+                "sample": "CTA02278",
+                "recommendedType": {
+                  "type": "string"
+                }
+              },
+              {
+                "name": "comercio_id",
+                "sample": "COM00347",
+                "recommendedType": {
+                  "type": "string"
+                }
+              },
+              {
+                "name": "monto",
+                "sample": "100762.44",
+                "recommendedType": {
+                  "type": "float"
+                }
+              },
+              {
+                "name": "fecha",
+                "sample": "2026-02-14",
+                "recommendedType": {
+                  "type": "datetime"
+                }
+              }
+            ]
+          },
+          {
+            "name": "posee.csv",
+            "expanded": true,
+            "fields": [
+              {
+                "name": "cliente_id",
+                "sample": "CLI02609",
+                "recommendedType": {
+                  "type": "string"
+                }
+              },
+              {
+                "name": "cuenta_id",
+                "sample": "CTA00001",
+                "recommendedType": {
+                  "type": "string"
+                }
+              },
+              {
+                "name": "fecha",
+                "sample": "2021-03-11",
+                "recommendedType": {
+                  "type": "datetime"
+                }
+              }
+            ]
+          },
+          {
+            "name": "transfiere_a.csv",
+            "expanded": true,
+            "fields": [
+              {
+                "name": "cuenta_origen",
+                "sample": "CTA01581",
+                "recommendedType": {
+                  "type": "string"
+                }
+              },
+              {
+                "name": "cuenta_destino",
+                "sample": "CTA00602",
+                "recommendedType": {
+                  "type": "string"
+                }
+              },
+              {
+                "name": "monto",
+                "sample": "1205926.65",
+                "recommendedType": {
+                  "type": "float"
+                }
+              },
+              {
+                "name": "fecha",
+                "sample": "2026-06-25",
+                "recommendedType": {
+                  "type": "datetime"
+                }
+              }
+            ]
+          },
+          {
+            "name": "usa_dispositivo.csv",
+            "expanded": true,
+            "fields": [
+              {
+                "name": "cuenta_id",
+                "sample": "CTA01330",
+                "recommendedType": {
+                  "type": "string"
+                }
+              },
+              {
+                "name": "dispositivo_id",
+                "sample": "DIS00768",
+                "recommendedType": {
+                  "type": "string"
+                }
+              },
+              {
+                "name": "fecha",
+                "sample": "2025-09-18",
+                "recommendedType": {
+                  "type": "datetime"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "nodeMappings": [
+        {
+          "node": {
+            "$ref": "#n:1"
+          },
+          "tableName": "clientes.csv",
+          "propertyMappings": [
+            {
+              "fieldName": "cliente_id",
+              "property": {
+                "$ref": "#p:1"
+              }
+            }
+          ]
+        },
+        {
+          "node": {
+            "$ref": "#n:2"
+          },
+          "tableName": "cuentas.csv",
+          "propertyMappings": [
+            {
+              "fieldName": "cuenta_id",
+              "property": {
+                "$ref": "#p:2"
+              }
+            }
+          ]
+        },
+        {
+          "node": {
+            "$ref": "#n:3"
+          },
+          "tableName": "dispositivos.csv",
+          "propertyMappings": [
+            {
+              "fieldName": "dispositivo_id",
+              "property": {
+                "$ref": "#p:3"
+              }
+            }
+          ]
+        },
+        {
+          "node": {
+            "$ref": "#n:4"
+          },
+          "tableName": "comercios.csv",
+          "propertyMappings": [
+            {
+              "fieldName": "comercio_id",
+              "property": {
+                "$ref": "#p:4"
+              }
+            }
+          ]
+        },
+        {
+          "node": {
+            "$ref": "#n:5"
+          },
+          "tableName": "ips.csv",
+          "propertyMappings": [
+            {
+              "fieldName": "ip_address",
+              "property": {
+                "$ref": "#p:5"
+              }
+            }
+          ]
+        }
+      ],
+      "relationshipMappings": [
+        {
+          "relationship": {
+            "$ref": "#r:1"
+          },
+          "tableName": "posee.csv",
+          "propertyMappings": [
+            {
+              "fieldName": "cliente_id",
+              "property": {
+                "$ref": "#p:6"
+              }
+            },
+            {
+              "fieldName": "cuenta_id",
+              "property": {
+                "$ref": "#p:7"
+              }
+            },
+            {
+              "fieldName": "fecha",
+              "property": {
+                "$ref": "#p:21"
+              }
+            }
+          ],
+          "fromMappings": {
+            "#p:1": "cliente_id"
+          },
+          "toMappings": {
+            "#p:2": "cuenta_id"
+          }
+        },
+        {
+          "relationship": {
+            "$ref": "#r:2"
+          },
+          "tableName": "usa_dispositivo.csv",
+          "propertyMappings": [
+            {
+              "fieldName": "cuenta_id",
+              "property": {
+                "$ref": "#p:8"
+              }
+            },
+            {
+              "fieldName": "dispositivo_id",
+              "property": {
+                "$ref": "#p:9"
+              }
+            },
+            {
+              "fieldName": "fecha",
+              "property": {
+                "$ref": "#p:22"
+              }
+            }
+          ],
+          "fromMappings": {
+            "#p:2": "cuenta_id"
+          },
+          "toMappings": {
+            "#p:3": "dispositivo_id"
+          }
+        },
+        {
+          "relationship": {
+            "$ref": "#r:3"
+          },
+          "tableName": "conecta_desde.csv",
+          "propertyMappings": [
+            {
+              "fieldName": "cuenta_id",
+              "property": {
+                "$ref": "#p:10"
+              }
+            },
+            {
+              "fieldName": "ip_address",
+              "property": {
+                "$ref": "#p:11"
+              }
+            },
+            {
+              "fieldName": "fecha",
+              "property": {
+                "$ref": "#p:12"
+              }
+            }
+          ],
+          "fromMappings": {
+            "#p:2": "cuenta_id"
+          },
+          "toMappings": {
+            "#p:5": "ip_address"
+          }
+        },
+        {
+          "relationship": {
+            "$ref": "#r:4"
+          },
+          "tableName": "paga_en.csv",
+          "propertyMappings": [
+            {
+              "fieldName": "cuenta_id",
+              "property": {
+                "$ref": "#p:14"
+              }
+            },
+            {
+              "fieldName": "comercio_id",
+              "property": {
+                "$ref": "#p:15"
+              }
+            },
+            {
+              "fieldName": "monto",
+              "property": {
+                "$ref": "#p:16"
+              }
+            },
+            {
+              "fieldName": "fecha",
+              "property": {
+                "$ref": "#p:17"
+              }
+            }
+          ],
+          "fromMappings": {
+            "#p:2": "cuenta_id"
+          },
+          "toMappings": {
+            "#p:4": "comercio_id"
+          }
+        },
+        {
+          "relationship": {
+            "$ref": "#r:5"
+          },
+          "tableName": "transfiere_a.csv",
+          "propertyMappings": [
+            {
+              "fieldName": "cuenta_origen",
+              "property": {
+                "$ref": "#p:13"
+              }
+            },
+            {
+              "fieldName": "cuenta_destino",
+              "property": {
+                "$ref": "#p:18"
+              }
+            },
+            {
+              "fieldName": "monto",
+              "property": {
+                "$ref": "#p:19"
+              }
+            },
+            {
+              "fieldName": "fecha",
+              "property": {
+                "$ref": "#p:20"
+              }
+            }
+          ],
+          "fromMappings": {
+            "#p:2": "cuenta_origen"
+          },
+          "toMappings": {
+            "#p:2": "cuenta_destino"
+          }
+        }
+      ]
+    },
+    "configurations": {
+      "idsToIgnore": [],
+      "arrayDelimiter": "|",
+      "vectorDelimiter": "|"
+    }
+  }
+}
