@@ -1,0 +1,18 @@
+[
+  {
+    "ruta": [
+      "Cuenta CTA00001",
+      "Cuenta CTA00047",
+      "Cuenta CTA00146",
+      "Cuenta CTA02802",
+      "Cuenta CTA01544"
+    ],
+    "vinculos": [
+      "TRANSFIERE_A",
+      "TRANSFIERE_A",
+      "TRANSFIERE_A",
+      "TRANSFIERE_A"
+    ],
+    "saltos": 4
+  }
+]

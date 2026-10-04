@@ -1,0 +1,109 @@
+======================================================================
+REQUISITO 7: consulta de riesgo (propiedades + estructura)
+======================================================================
+
+// 7. RANKING de riesgo (sale como tabla)
+CALL () { // Primero identifica las cuentas que forman parte de un ciclo sospechoso, con el mismo criterio de la consulta 3b.
+  MATCH p = (a:Cuenta)-[:TRANSFIERE_A*3..4]->(a)
+  WITH p, a, relationships(p) AS rs, nodes(p)[1..-1] AS internos
+  WHERE all(n IN internos WHERE single(m IN internos WHERE m = n)) // Ninguna cuenta intermedia se repite.
+    AND NOT a IN internos
+    AND all(i IN range(0, size(rs) - 2) WHERE
+          rs[i].fecha < rs[i + 1].fecha // Las fechas avanzan en cada salto.
+          AND rs[i + 1].monto < rs[i].monto // Cada monto es menor que el anterior...
+          AND rs[i + 1].monto >= rs[i].monto * 0.9) // ...pero baja como máximo un 10 %.
+  UNWIND nodes(p) AS n // Marca TODAS las cuentas del ciclo, no solo la que lo inicia.
+  RETURN collect(DISTINCT n) AS cuentas_en_ciclo
+}
+MATCH (c:Cuenta)
+OPTIONAL MATCH (:Cuenta)-[t:TRANSFIERE_A]->(c)
+  WHERE t.fecha >= datetime('2026-08-01') // Busca transferencias recibidas desde el 1 de agosto de 2026.
+WITH cuentas_en_ciclo, c, count(t) AS recibidas_ultimo_mes, coalesce(sum(t.monto), 0) AS monto_ultimo_mes // Agrega la cantidad y volumen monetario reciente.
+WITH c, recibidas_ultimo_mes, monto_ultimo_mes,
+     // mayor cantidad de clientes distintos en alguno de sus dispositivos
+     reduce(m = 0, x IN [(c)-[:USA_DISPOSITIVO]->(d:Dispositivo) | // Revisa cada dispositivo o IP al que se conecta la cuenta y cuenta cuántos clientes distintos lo // utilizan (COUNT { MATCH ... }). Luego, el reduce encuentra el valor máximo (max_clientes_dispositivo y max_clientes_ip).
+         COUNT { MATCH (d)<-[:USA_DISPOSITIVO]-(:Cuenta)<-[:POSEE]-(cl:Cliente) RETURN DISTINCT cl }]
+       | CASE WHEN x > m THEN x ELSE m END) AS max_clientes_dispositivo,
+     // mayor cantidad de clientes distintos en alguna de sus IPs
+     reduce(m = 0, x IN [(c)-[:CONECTA_DESDE]->(ip:IP) |
+         COUNT { MATCH (ip)<-[:CONECTA_DESDE]-(:Cuenta)<-[:POSEE]-(cl:Cliente) RETURN DISTINCT cl }]
+       | CASE WHEN x > m THEN x ELSE m END) AS max_clientes_ip,
+     c IN cuentas_en_ciclo AS en_ciclo // Verdadero si la cuenta forma parte de alguno de los ciclos sospechosos encontrados al inicio.
+WITH c, recibidas_ultimo_mes, monto_ultimo_mes, max_clientes_dispositivo, max_clientes_ip, en_ciclo,
+     CASE WHEN en_ciclo THEN 40 ELSE 0 END AS p_ciclo,
+     CASE WHEN max_clientes_dispositivo >= 9 THEN 25
+          WHEN max_clientes_dispositivo >= 7 THEN 10 ELSE 0 END AS p_dispositivo,
+     CASE WHEN max_clientes_ip >= 16 THEN 15
+          WHEN max_clientes_ip >= 12 THEN 5 ELSE 0 END AS p_ip,
+     CASE WHEN monto_ultimo_mes >= 1000000 THEN 20
+          WHEN monto_ultimo_mes >= 500000  THEN 10 ELSE 0 END AS p_monto
+RETURN c.cuenta_id AS cuenta,
+       p_ciclo + p_dispositivo + p_ip + p_monto AS riesgo,
+       CASE WHEN p_ciclo + p_dispositivo + p_ip + p_monto >= 60 THEN 'ALTO'
+            WHEN p_ciclo + p_dispositivo + p_ip + p_monto >= 30 THEN 'MEDIO'
+            ELSE 'BAJO' END AS nivel,
+       en_ciclo, max_clientes_dispositivo, max_clientes_ip,
+       recibidas_ultimo_mes, round(monto_ultimo_mes) AS monto_ultimo_mes
+ORDER BY riesgo DESC, monto_ultimo_mes DESC
+LIMIT 20; // Puntuación por ciclo: 40 pts si está en un ciclo sospechoso. Dispositivo compartido: 25 pts (>= 9 clientes), 10 pts (>= 7 clientes). IP compartida: 15 pts // (>= 16 clientes), 5 pts (>= 12 clientes). Monto recibido desde agosto: 20 pts (>= 1 000 000), 10 pts (>= 500 000).
+// Clasifica en ALTO (>= 60), MEDIO (>= 30) o BAJO en cualquier otro caso. y luego muestra las 20 cuentas más críticas del sistema.
+
+// 7. GRAFO de las 5 cuentas más riesgosas (vista Graph)
+// Ejecuta exactamente la misma lógica de cálculo de puntaje que el ranking tabular, ordenando y limitando el resultado a las 5 cuentas con mayor riesgo
+
+CALL () { // Mismo paso inicial del ranking, pero guarda los caminos de los ciclos para dibujarlos.
+  MATCH p = (a:Cuenta)-[:TRANSFIERE_A*3..4]->(a)
+  WITH p, a, relationships(p) AS rs, nodes(p)[1..-1] AS internos
+  WHERE all(n IN internos WHERE single(m IN internos WHERE m = n))
+    AND NOT a IN internos
+    AND all(i IN range(0, size(rs) - 2) WHERE
+          rs[i].fecha < rs[i + 1].fecha
+          AND rs[i + 1].monto < rs[i].monto
+          AND rs[i + 1].monto >= rs[i].monto * 0.9)
+  RETURN collect(p) AS ciclos_sospechosos
+}
+MATCH (c:Cuenta)
+OPTIONAL MATCH (:Cuenta)-[t:TRANSFIERE_A]->(c)
+  WHERE t.fecha >= datetime('2026-08-01')
+WITH ciclos_sospechosos, c, coalesce(sum(t.monto), 0) AS monto_ultimo_mes
+WITH c, monto_ultimo_mes,
+     reduce(m = 0, x IN [(c)-[:USA_DISPOSITIVO]->(d:Dispositivo) |
+         COUNT { MATCH (d)<-[:USA_DISPOSITIVO]-(:Cuenta)<-[:POSEE]-(cl:Cliente) RETURN DISTINCT cl }]
+       | CASE WHEN x > m THEN x ELSE m END) AS max_disp,
+     reduce(m = 0, x IN [(c)-[:CONECTA_DESDE]->(ip:IP) |
+         COUNT { MATCH (ip)<-[:CONECTA_DESDE]-(:Cuenta)<-[:POSEE]-(cl:Cliente) RETURN DISTINCT cl }]
+       | CASE WHEN x > m THEN x ELSE m END) AS max_ip,
+     [p IN ciclos_sospechosos WHERE c IN nodes(p)] AS ciclos // Ciclos sospechosos en los que participa la cuenta (estructura + propiedades).
+WITH c, monto_ultimo_mes, ciclos,
+     CASE WHEN size(ciclos) > 0 THEN 40 ELSE 0 END
+   + CASE WHEN max_disp >= 9 THEN 25 WHEN max_disp >= 7 THEN 10 ELSE 0 END
+   + CASE WHEN max_ip >= 16 THEN 15 WHEN max_ip >= 12 THEN 5 ELSE 0 END
+   + CASE WHEN monto_ultimo_mes >= 1000000 THEN 20
+          WHEN monto_ultimo_mes >= 500000 THEN 10 ELSE 0 END AS riesgo
+ORDER BY riesgo DESC, monto_ultimo_mes DESC
+LIMIT 5
+// transferencias recibidas desde agosto
+OPTIONAL MATCH recibe = (:Cuenta)-[t2:TRANSFIERE_A]->(c) // Extrae los enlaces de las transferencias entrantes desde agosto.
+  WHERE t2.fecha >= datetime('2026-08-01')
+WITH c, ciclos, collect(recibe) AS recibidas
+// dispositivos e IPs que usa
+OPTIONAL MATCH uso = (c)-[:USA_DISPOSITIVO|CONECTA_DESDE]->() // Trae los dispositivos e IPs a los que la cuenta está conectada.
+WITH c, ciclos, recibidas, collect(uso) AS usos
+// dueño de la cuenta
+OPTIONAL MATCH dueno = (:Cliente)-[:POSEE]->(c) // Agrega el cliente titular de la cuenta.
+RETURN c, ciclos, recibidas, usos, collect(dueno) AS duenos;
+
+
+======================================================================
+VISUALIZACIÓN PARA LA DEMO (vista Graph)
+======================================================================
+
+// V4. Vecindario de la cuenta con mayor riesgo (requisito 7).
+//     CTA00013 es la primera cuenta del ranking del requisito 7.
+MATCH (c:Cuenta {cuenta_id: 'CTA00013'})
+OPTIONAL MATCH p1 = (c)-[:TRANSFIERE_A]-(:Cuenta) // Muestra todas las transacciones directas (entrantes y salientes).
+OPTIONAL MATCH p2 = (c)-[:USA_DISPOSITIVO|CONECTA_DESDE]->()<-[:USA_DISPOSITIVO|CONECTA_DESDE]-(:Cuenta) // Descubre conexiones indirectas de 2 saltos: otras cuentas
+// que hayan compartido las mismas IPs o dispositivos físicos con CTA00013.
+OPTIONAL MATCH p3 = (:Cliente)-[:POSEE]->(c) // Agrega al cliente dueño de la cuenta.
+RETURN p1, p2, p3
+LIMIT 150; // Evita saturar la memoria o la vista gráfica de Neo4j limitando los caminos dibujados.
