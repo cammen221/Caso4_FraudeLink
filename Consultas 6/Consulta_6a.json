@@ -1,0 +1,90 @@
+[
+  {
+    "ruta": [
+      "CTA00001",
+      "CTA01215",
+      "CTA03304",
+      "CTA03038",
+      "CTA04754",
+      "CTA03426",
+      "CTA01544"
+    ],
+    "montos": [
+      948585.04,
+      996820.36,
+      1434746.77,
+      1051014.61,
+      1470703.16,
+      15974.88
+    ],
+    "fechas": [
+      {
+        "year": 2026,
+        "month": 5,
+        "day": 30,
+        "hour": 0,
+        "minute": 0,
+        "second": 0,
+        "nanosecond": 0,
+        "timeZoneOffsetSeconds": 0,
+        "timeZoneId": null
+      },
+      {
+        "year": 2025,
+        "month": 11,
+        "day": 23,
+        "hour": 0,
+        "minute": 0,
+        "second": 0,
+        "nanosecond": 0,
+        "timeZoneOffsetSeconds": 0,
+        "timeZoneId": null
+      },
+      {
+        "year": 2025,
+        "month": 1,
+        "day": 9,
+        "hour": 0,
+        "minute": 0,
+        "second": 0,
+        "nanosecond": 0,
+        "timeZoneOffsetSeconds": 0,
+        "timeZoneId": null
+      },
+      {
+        "year": 2026,
+        "month": 5,
+        "day": 23,
+        "hour": 0,
+        "minute": 0,
+        "second": 0,
+        "nanosecond": 0,
+        "timeZoneOffsetSeconds": 0,
+        "timeZoneId": null
+      },
+      {
+        "year": 2025,
+        "month": 6,
+        "day": 20,
+        "hour": 0,
+        "minute": 0,
+        "second": 0,
+        "nanosecond": 0,
+        "timeZoneOffsetSeconds": 0,
+        "timeZoneId": null
+      },
+      {
+        "year": 2025,
+        "month": 12,
+        "day": 28,
+        "hour": 0,
+        "minute": 0,
+        "second": 0,
+        "nanosecond": 0,
+        "timeZoneOffsetSeconds": 0,
+        "timeZoneId": null
+      }
+    ],
+    "saltos": 6
+  }
+]
