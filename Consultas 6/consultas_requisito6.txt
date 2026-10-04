@@ -1,0 +1,35 @@
+======================================================================
+REQUISITO 6: camino entre dos cuentas sospechosas
+======================================================================
+
+// 6a. Ruta del dinero (solo transferencias, respetando la dirección)
+MATCH (a:Cuenta {cuenta_id: 'CTA00001'}), (b:Cuenta {cuenta_id: 'CTA01544'}) // Ubica los nodos de inicio (CTA00001) y destino (CTA01544).
+MATCH p = shortestPath((a)-[:TRANSFIERE_A*..6]->(b)) // Busca el camino más corto entre ambas cuentas siguiendo únicamente transferencias salientes dirigidas con un //máximo de hasta 6 saltos
+RETURN [n IN nodes(p) | n.cuenta_id] AS ruta, // Itera sobre los nodos del camino p extrayendo una lista secuencial de IDs de cuentas.
+       [r IN relationships(p) | r.monto] AS montos, // Extrae la lista de montos y fechas de cada transferencia que compone la ruta.
+       [r IN relationships(p) | r.fecha] AS fechas, 
+       length(p) AS saltos; // Cuenta cuántas transferencias intermedias se necesitaron para conectar ambas cuentas.
+
+// 6b. Conexión por cualquier vínculo (transferencias, dispositivos, IPs o mismo dueño)
+MATCH (a:Cuenta {cuenta_id: 'CTA00001'}), (b:Cuenta {cuenta_id: 'CTA01544'}) // Ubica los nodos de inicio (CTA00001) y destino (CTA01544).
+MATCH p = shortestPath((a)-[:TRANSFIERE_A|USA_DISPOSITIVO|CONECTA_DESDE|POSEE*..8]-(b)) // Busca el camino más corto sin importar la dirección y admitiendo cualquier // tipo de vínculo (dinero, dispositivo compartido, dirección IP compartida o titular común/POSEE) hasta un límite de 8 saltos.
+RETURN [n IN nodes(p) | labels(n)[0] + ' ' + coalesce(n.cuenta_id, n.dispositivo_id, n.ip_address, n.cliente_id)] AS ruta, //Como los nodos intermedios pueden ser de // distinta etiqueta (Cuenta, Dispositivo, IP, Cliente), coalesce toma el identificador correspondiente que no sea nulo y lo concatena con la etiqueta (labels(n)[0]).
+       [r IN relationships(p) | type(r)] AS vinculos, // Devuelve los nombres de las relaciones que unieron a las entidades a lo largo de la cadena.
+       length(p) AS saltos;
+
+// 6c. Visualización del camino
+MATCH (a:Cuenta {cuenta_id: 'CTA00001'}), (b:Cuenta {cuenta_id: 'CTA01544'})
+MATCH p = shortestPath((a)-[:TRANSFIERE_A|USA_DISPOSITIVO|CONECTA_DESDE|POSEE*..8]-(b))
+RETURN p; // Hace exactamente la misma búsqueda que la consulta 6b, pero al hacer RETURN p, Neo4j Browser renderiza visualmente el grafo completo con todos los nodos y // aristas interactivos en pantalla.
+
+
+======================================================================
+VISUALIZACIÓN PARA LA DEMO (vista Graph)
+======================================================================
+
+// V3. Camino entre las dos cuentas sospechosas (requisito 6).
+MATCH (a:Cuenta {cuenta_id: 'CTA00001'}), (b:Cuenta {cuenta_id: 'CTA01544'})
+MATCH p = shortestPath((a)-[:TRANSFIERE_A|USA_DISPOSITIVO|CONECTA_DESDE|POSEE*..8]-(b))
+RETURN p;
+
+// Corresponde a la visualización gráfica directa de la ruta más corta (hasta 8 saltos) entre CTA00001 y CTA01544 a través de cualquier relación.
