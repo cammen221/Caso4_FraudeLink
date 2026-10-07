@@ -45,7 +45,11 @@ RETURN c.cuenta_id AS cuenta,
        en_ciclo, max_clientes_dispositivo, max_clientes_ip,
        recibidas_ultimo_mes, round(monto_ultimo_mes) AS monto_ultimo_mes
 ORDER BY riesgo DESC, monto_ultimo_mes DESC
-LIMIT 20; // Puntuación por ciclo: 40 pts si está en un ciclo sospechoso. Dispositivo compartido: 25 pts (>= 9 clientes), 10 pts (>= 7 clientes). IP compartida: 15 pts // (>= 16 clientes), 5 pts (>= 12 clientes). Monto recibido desde agosto: 20 pts (>= 1 000 000), 10 pts (>= 500 000).
+LIMIT 20; 
+
+// Tiempo transcurrido: 8,238ms
+
+// Puntuación por ciclo: 40 pts si está en un ciclo sospechoso. Dispositivo compartido: 25 pts (>= 9 clientes), 10 pts (>= 7 clientes). IP compartida: 15 pts // (>= 16 clientes), 5 pts (>= 12 clientes). Monto recibido desde agosto: 20 pts (>= 1 000 000), 10 pts (>= 500 000).
 // Clasifica en ALTO (>= 60), MEDIO (>= 30) o BAJO en cualquier otro caso. y luego muestra las 20 cuentas más críticas del sistema.
 
 // 7. GRAFO de las 5 cuentas más riesgosas (vista Graph)
@@ -93,6 +97,7 @@ WITH c, ciclos, recibidas, collect(uso) AS usos
 OPTIONAL MATCH dueno = (:Cliente)-[:POSEE]->(c) // Agrega el cliente titular de la cuenta.
 RETURN c, ciclos, recibidas, usos, collect(dueno) AS duenos;
 
+// Tiempo transcurrido: 6,195ms
 
 ======================================================================
 VISUALIZACIÓN PARA LA DEMO (vista Graph)
@@ -106,4 +111,8 @@ OPTIONAL MATCH p2 = (c)-[:USA_DISPOSITIVO|CONECTA_DESDE]->()<-[:USA_DISPOSITIVO|
 // que hayan compartido las mismas IPs o dispositivos físicos con CTA00013.
 OPTIONAL MATCH p3 = (:Cliente)-[:POSEE]->(c) // Agrega al cliente dueño de la cuenta.
 RETURN p1, p2, p3
-LIMIT 150; // Evita saturar la memoria o la vista gráfica de Neo4j limitando los caminos dibujados.
+LIMIT 150; 
+
+// Tiempo transcurrido: 762ms
+
+// Evita saturar la memoria o la vista gráfica de Neo4j limitando los caminos dibujados.
