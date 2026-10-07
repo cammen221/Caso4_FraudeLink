@@ -4,7 +4,6 @@ RETURN p // Devuelve el camino anteriormente buscado
 LIMIT 10; // Muestra como máximo 10 ciclos
  
 
-
 // 3b. Ciclos sospechosos en todo el grafo
 MATCH p = (a:Cuenta)-[:TRANSFIERE_A*3..4]->(a) // Busca en todas las cuentas los casos que salen de una cuenta y pasa por 3 o 4 transferencias
 WITH p, a, relationships(p) AS rs, nodes(p)[1..-1] AS internos // Saca las transferencias del ciclo y las cuentas intermedias (sin contar el origen) en dos listas y lo filtra.
@@ -18,5 +17,5 @@ WHERE all(n IN internos WHERE single(m IN internos WHERE m = n)) // Ninguna que 
 RETURN [n IN nodes(p) | n.cuenta_id] AS ciclo, // Devuelve los ciclos,montos y saltos en columnas
        [r IN rs | r.monto] AS montos,
        size(rs) AS saltos;
- 
+
 // Este requisito permite descubrir redes de lavado de dinero que no se pueden observar cada transacción individualmente. Además muestra por qué el modelo de grafos es el más adecuado que //uno relacional para dicho problema.

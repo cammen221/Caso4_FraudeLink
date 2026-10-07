@@ -8,6 +8,7 @@ RETURN d.dispositivo_id AS dispositivo, n_clientes, cuentas // Se definen las co
 ORDER BY n_clientes DESC // Ordena de mayor a menor la cantidad de clientes. Quiere decir que los usuarios más sospechosos van a salir de primero
 LIMIT 20; // Muestra solo los primeros resultados
 
+
 // 2.b. IPs compartidas
 
 MATCH (cl:Cliente)-[:POSEE]->(cu:Cuenta)-[:CONECTA_DESDE]->(ip:IP) // Busca los clientes que son dueños de una cuenta, en la que dicha cuenta se Conecta desde un IP
@@ -17,6 +18,7 @@ WHERE n_clientes >= 2 // Deja solo las IP's que usaron 2 o más clientes distint
 RETURN ip.ip_address AS ip, n_clientes, cuentas // Define las columnas para mostrar los resultados
 ORDER BY n_clientes DESC // Ordena de mayor a menor las IP's con más clientes, lo que quiere decir que salen primero las más sospechosas.
 LIMIT 20; //Muestra solo las primeras 20 IP's
+
 
 // 2.c. Cuentas que comparten dispositivo y además IP
 

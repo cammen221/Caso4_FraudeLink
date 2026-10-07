@@ -13,6 +13,9 @@ RETURN [n IN nodes(p) | n.cuenta_id] AS ruta, // Itera sobre los nodos del camin
        length(p) AS saltos // Cuenta cuántas transferencias intermedias se necesitaron para conectar ambas cuentas.
 ORDER BY saltos // Deja primero la ruta más corta.
 LIMIT 1;
+
+// Tiempo transcurrido: 573ms
+
 // Resultado: 1 fila. Ruta de 3 saltos con fechas en orden:
 // CTA00010 -> CTA01551 (05/08/2025, 1 012 564.05) -> CTA00476 (14/08/2025, 509 565.29) -> CTA01218 (20/03/2026, 176 928.66).
 // Intermediarios: CTA01551 y CTA00476. El dinero sale de una cuenta del ciclo de lavado y llega a una cuenta del dispositivo compartido.
@@ -26,6 +29,8 @@ RETURN p
 ORDER BY length(p)
 LIMIT 1; // Neo4j Browser dibuja las 4 cuentas y las 3 transferencias de la ruta.
 
+// Tiempo transcurrido: 498ms
+
 // 6b. Conexión por cualquier vínculo (transferencias, dispositivos, IPs o mismo dueño)
 MATCH (a:Cuenta {cuenta_id: 'CTA00001'}), (b:Cuenta {cuenta_id: 'CTA01544'}) // Ubica los nodos de inicio (CTA00001) y destino (CTA01544).
 MATCH p = shortestPath((a)-[:TRANSFIERE_A|USA_DISPOSITIVO|CONECTA_DESDE|POSEE*..8]-(b)) // Busca el camino más corto sin importar la dirección y admitiendo cualquier // tipo de vínculo (dinero, dispositivo compartido, dirección IP compartida o titular común/POSEE) hasta un límite de 8 saltos.
@@ -33,11 +38,14 @@ RETURN [n IN nodes(p) | labels(n)[0] + ' ' + coalesce(n.cuenta_id, n.dispositivo
        [r IN relationships(p) | type(r)] AS vinculos, // Devuelve los nombres de las relaciones que unieron a las entidades a lo largo de la cadena.
        length(p) AS saltos;
 
+// Tiempo transcurrido: 513ms
+
 // 6c. Visualización del camino
 MATCH (a:Cuenta {cuenta_id: 'CTA00001'}), (b:Cuenta {cuenta_id: 'CTA01544'})
 MATCH p = shortestPath((a)-[:TRANSFIERE_A|USA_DISPOSITIVO|CONECTA_DESDE|POSEE*..8]-(b))
 RETURN p; // Hace exactamente la misma búsqueda que la consulta 6b, pero al hacer RETURN p, Neo4j Browser renderiza visualmente el grafo completo con todos los nodos y // aristas interactivos en pantalla.
 
+// Tiempo transcurrido: 248ms
 
 ======================================================================
 VISUALIZACIÓN PARA LA DEMO (vista Graph)
@@ -47,5 +55,7 @@ VISUALIZACIÓN PARA LA DEMO (vista Graph)
 MATCH (a:Cuenta {cuenta_id: 'CTA00001'}), (b:Cuenta {cuenta_id: 'CTA01544'})
 MATCH p = shortestPath((a)-[:TRANSFIERE_A|USA_DISPOSITIVO|CONECTA_DESDE|POSEE*..8]-(b))
 RETURN p;
+
+// Tiempo transcurrido: 163ms
 
 // Corresponde a la visualización gráfica directa de la ruta más corta (hasta 8 saltos) entre CTA00001 y CTA01544 a través de cualquier relación.
