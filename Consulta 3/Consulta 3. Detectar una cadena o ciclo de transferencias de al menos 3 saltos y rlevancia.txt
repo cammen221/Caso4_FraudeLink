@@ -3,7 +3,6 @@ MATCH p = (a:Cuenta {cuenta_id: 'CTA00001'})-[:TRANSFIERE_A*3..4]->(a) // Busca 
 RETURN p // Devuelve el camino anteriormente buscado
 LIMIT 10; // Muestra como máximo 10 ciclos
  
-// Tiempo transcurrido: 3,980ms
 
 // 3b. Ciclos sospechosos en todo el grafo
 MATCH p = (a:Cuenta)-[:TRANSFIERE_A*3..4]->(a) // Busca en todas las cuentas los casos que salen de una cuenta y pasa por 3 o 4 transferencias
@@ -19,6 +18,4 @@ RETURN [n IN nodes(p) | n.cuenta_id] AS ciclo, // Devuelve los ciclos,montos y s
        [r IN rs | r.monto] AS montos,
        size(rs) AS saltos;
 
-// Tiempo transcurrido: 438ms
- 
 // Este requisito permite descubrir redes de lavado de dinero que no se pueden observar cada transacción individualmente. Además muestra por qué el modelo de grafos es el más adecuado que //uno relacional para dicho problema.
