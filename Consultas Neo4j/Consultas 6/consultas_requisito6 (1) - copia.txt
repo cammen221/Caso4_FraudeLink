@@ -1,0 +1,61 @@
+======================================================================
+REQUISITO 6: camino entre dos cuentas sospechosas
+======================================================================
+
+// 6a. Ruta del dinero (solo transferencias, respetando la dirección y el orden de las fechas)
+// Cuentas sospechosas: CTA00010 (forma parte del ciclo de lavado del requisito 3) y CTA01218 (usa el dispositivo DIS00771, compartido por 14 clientes, requisito 2).
+MATCH p = (a:Cuenta {cuenta_id: 'CTA00010'})-[:TRANSFIERE_A*1..6]->(b:Cuenta {cuenta_id: 'CTA01218'}) // Busca rutas de hasta 6 transferencias dirigidas desde CTA00010 hasta CTA01218.
+WHERE all(i IN range(0, length(p) - 2)
+          WHERE relationships(p)[i].fecha < relationships(p)[i + 1].fecha) // Cada transferencia debe ocurrir después de la anterior; si no, el dinero no pudo recorrer ese camino.
+RETURN [n IN nodes(p) | n.cuenta_id] AS ruta, // Itera sobre los nodos del camino p extrayendo una lista secuencial de IDs de cuentas.
+       [r IN relationships(p) | r.monto] AS montos, // Extrae la lista de montos y fechas de cada transferencia que compone la ruta.
+       [r IN relationships(p) | r.fecha] AS fechas,
+       length(p) AS saltos // Cuenta cuántas transferencias intermedias se necesitaron para conectar ambas cuentas.
+ORDER BY saltos // Deja primero la ruta más corta.
+LIMIT 1;
+
+// Tiempo transcurrido: 573ms
+
+// Resultado: 1 fila. Ruta de 3 saltos con fechas en orden:
+// CTA00010 -> CTA01551 (05/08/2025, 1 012 564.05) -> CTA00476 (14/08/2025, 509 565.29) -> CTA01218 (20/03/2026, 176 928.66).
+// Intermediarios: CTA01551 y CTA00476. El dinero sale de una cuenta del ciclo de lavado y llega a una cuenta del dispositivo compartido.
+// Nota: entre CTA00001 y CTA01544 (consulta 6b) no existe una ruta cronológica de hasta 6 saltos; esas cuentas están conectadas, pero el dinero de una no llega a la otra.
+
+// 6a (visualización). Mismo camino de la 6a en la vista Graph.
+MATCH p = (a:Cuenta {cuenta_id: 'CTA00010'})-[:TRANSFIERE_A*1..6]->(b:Cuenta {cuenta_id: 'CTA01218'})
+WHERE all(i IN range(0, length(p) - 2)
+          WHERE relationships(p)[i].fecha < relationships(p)[i + 1].fecha)
+RETURN p
+ORDER BY length(p)
+LIMIT 1; // Neo4j Browser dibuja las 4 cuentas y las 3 transferencias de la ruta.
+
+// Tiempo transcurrido: 498ms
+
+// 6b. Conexión por cualquier vínculo (transferencias, dispositivos, IPs o mismo dueño)
+MATCH (a:Cuenta {cuenta_id: 'CTA00001'}), (b:Cuenta {cuenta_id: 'CTA01544'}) // Ubica los nodos de inicio (CTA00001) y destino (CTA01544).
+MATCH p = shortestPath((a)-[:TRANSFIERE_A|USA_DISPOSITIVO|CONECTA_DESDE|POSEE*..8]-(b)) // Busca el camino más corto sin importar la dirección y admitiendo cualquier // tipo de vínculo (dinero, dispositivo compartido, dirección IP compartida o titular común/POSEE) hasta un límite de 8 saltos.
+RETURN [n IN nodes(p) | labels(n)[0] + ' ' + coalesce(n.cuenta_id, n.dispositivo_id, n.ip_address, n.cliente_id)] AS ruta, //Como los nodos intermedios pueden ser de // distinta etiqueta (Cuenta, Dispositivo, IP, Cliente), coalesce toma el identificador correspondiente que no sea nulo y lo concatena con la etiqueta (labels(n)[0]).
+       [r IN relationships(p) | type(r)] AS vinculos, // Devuelve los nombres de las relaciones que unieron a las entidades a lo largo de la cadena.
+       length(p) AS saltos;
+
+// Tiempo transcurrido: 513ms
+
+// 6c. Visualización del camino
+MATCH (a:Cuenta {cuenta_id: 'CTA00001'}), (b:Cuenta {cuenta_id: 'CTA01544'})
+MATCH p = shortestPath((a)-[:TRANSFIERE_A|USA_DISPOSITIVO|CONECTA_DESDE|POSEE*..8]-(b))
+RETURN p; // Hace exactamente la misma búsqueda que la consulta 6b, pero al hacer RETURN p, Neo4j Browser renderiza visualmente el grafo completo con todos los nodos y // aristas interactivos en pantalla.
+
+// Tiempo transcurrido: 248ms
+
+======================================================================
+VISUALIZACIÓN PARA LA DEMO (vista Graph)
+======================================================================
+
+// V3. Camino entre las dos cuentas sospechosas (requisito 6).
+MATCH (a:Cuenta {cuenta_id: 'CTA00001'}), (b:Cuenta {cuenta_id: 'CTA01544'})
+MATCH p = shortestPath((a)-[:TRANSFIERE_A|USA_DISPOSITIVO|CONECTA_DESDE|POSEE*..8]-(b))
+RETURN p;
+
+// Tiempo transcurrido: 163ms
+
+// Corresponde a la visualización gráfica directa de la ruta más corta (hasta 8 saltos) entre CTA00001 y CTA01544 a través de cualquier relación.
