@@ -8,6 +8,8 @@ RETURN d.dispositivo_id AS dispositivo, n_clientes, cuentas // Se definen las co
 ORDER BY n_clientes DESC // Ordena de mayor a menor la cantidad de clientes. Quiere decir que los usuarios más sospechosos van a salir de primero
 LIMIT 20; // Muestra solo los primeros resultados
 
+// Tiempo de respuesta: 5,947ms
+
 // 2.b. IPs compartidas
 
 MATCH (cl:Cliente)-[:POSEE]->(cu:Cuenta)-[:CONECTA_DESDE]->(ip:IP) // Busca los clientes que son dueños de una cuenta, en la que dicha cuenta se Conecta desde un IP
@@ -17,6 +19,8 @@ WHERE n_clientes >= 2 // Deja solo las IP's que usaron 2 o más clientes distint
 RETURN ip.ip_address AS ip, n_clientes, cuentas // Define las columnas para mostrar los resultados
 ORDER BY n_clientes DESC // Ordena de mayor a menor las IP's con más clientes, lo que quiere decir que salen primero las más sospechosas.
 LIMIT 20; //Muestra solo las primeras 20 IP's
+
+// Tiempo de respuesta: 1,196ms
 
 // 2.c. Cuentas que comparten dispositivo y además IP
 
@@ -31,7 +35,7 @@ RETURN a1.cuenta_id AS cuenta_1, a2.cuenta_id AS cuenta_2, // Devuelve las colum
        collect(DISTINCT ip.ip_address) AS ips // Se agrega una lista de las IP's que comparten el usuario a1 y el a2
 LIMIT 50; // Muestra las primeras 50 parejas de usuarios
 
-
+// Tiempo de respuesta: 2,797ms
 
 
 
