@@ -7541,6 +7541,23 @@ INSERT INTO Paga_En (cuenta_id, comercio_id, monto, fecha) VALUES
 ('CTA03482', 'COM00329', 72427.11, '2026-04-12'), ('CTA03975', 'COM00122', 492750.72, '2026-04-06');
 GO
 
+-- creacion de indices para que los JOIN sean mas agiles --
+CREATE NONCLUSTERED INDEX IX_Posee_Cuenta ON Posee(cuenta_id);
+GO
+CREATE NONCLUSTERED INDEX IX_Posee_Cliente ON Posee(cliente_id);
+GO
+CREATE NONCLUSTERED INDEX IX_UsaDisp_Cuenta ON Usa_Dispositivo(cuenta_id);
+GO
+CREATE NONCLUSTERED INDEX IX_UsaDisp_Dispositivo ON Usa_Dispositivo(dispositivo_id);
+GO
+CREATE NONCLUSTERED INDEX IX_Conecta_Cuenta ON Conecta_Desde(cuenta_id);
+GO
+CREATE NONCLUSTERED INDEX IX_Conecta_IP ON Conecta_Desde(ip_address);
+GO
+CREATE NONCLUSTERED INDEX IX_Transf_Origen ON Transfiere_A(cuenta_origen);
+GO
+CREATE NONCLUSTERED INDEX IX_Transf_Destino ON Transfiere_A(cuenta_destino);
+GO
 
 -- Revisa que los nodos funcionen corretamente--
 SELECT (SELECT COUNT(*) FROM Cliente) + (SELECT COUNT(*) FROM Cuenta) + (SELECT COUNT(*) FROM Dispositivo)
