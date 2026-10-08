@@ -17,6 +17,8 @@ HAVING COUNT(DISTINCT p.cliente_id) >= 2
 ORDER BY n_clientes DESC;
 GO
 
+-- Duración: 79 ms--
+
 -- Consulta 2.b. IP's compartidas por varios clientes--
 USE FraudeLink;                 
 SET STATISTICS TIME ON;        
@@ -28,6 +30,7 @@ HAVING COUNT(DISTINCT p.cliente_id) >= 2
 ORDER BY n_clientes DESC;
 GO
 
+-- Duración: 58 ms--
 
 -- Consulta 2.c. Cuentas que tinen distintos dueños y comparten una misma IP--
 USE FraudeLink;                 
@@ -46,6 +49,8 @@ GROUP BY u1.cuenta_id, u2.cuenta_id
 ORDER BY cuenta_1, cuenta_2;
 
 GO
+
+-- Duración: 1089 ms--
 
 -- Consulta 3.b. Ciclos de transferencia de 3 y 4 ciclos--
 USE FraudeLink;                 
@@ -78,6 +83,7 @@ WHERE t1.cuenta_origen <> t3.cuenta_origen
   AND t1.cuenta_origen < t4.cuenta_origen;
 GO
 
+-- Duración: 1173 ms--
 
 -- Consulta 6.a. Ruta del dinero entre dos cuentas (CTA00010 y CTA01218)--
 USE FraudeLink;                 
@@ -98,6 +104,8 @@ FROM ruta
 WHERE cuenta = 'CTA01218'
 ORDER BY saltos;
 GO
+
+-- Duración: 99 ms--
 
 -- Consulta 6.b. Distancia que hay entre las cuentas anteriores por cualquier vínculo--
 USE FraudeLink;                
@@ -135,6 +143,7 @@ DROP TABLE #aristas, #visitados;
 
 GO
 
+-- Duración: 1180 ms--
 
 -- Consulta 7. Ranking de riesgo--
 USE FraudeLink;                
@@ -207,3 +216,5 @@ LEFT JOIN montos   m  ON m.cuenta_id  = cu.cuenta_id
 ORDER BY riesgo DESC, monto_ultimo_mes DESC;
 
 GO
+
+-- Duración: 2532 ms--
