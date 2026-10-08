@@ -1,0 +1,51 @@
+[
+  {
+    "ruta": [
+      "CTA00010",
+      "CTA01551",
+      "CTA00476",
+      "CTA01218"
+    ],
+    "montos": [
+      1012564.05,
+      509565.29,
+      176928.66
+    ],
+    "fechas": [
+      {
+        "year": 2025,
+        "month": 8,
+        "day": 5,
+        "hour": 0,
+        "minute": 0,
+        "second": 0,
+        "nanosecond": 0,
+        "timeZoneOffsetSeconds": 0,
+        "timeZoneId": null
+      },
+      {
+        "year": 2025,
+        "month": 8,
+        "day": 14,
+        "hour": 0,
+        "minute": 0,
+        "second": 0,
+        "nanosecond": 0,
+        "timeZoneOffsetSeconds": 0,
+        "timeZoneId": null
+      },
+      {
+        "year": 2026,
+        "month": 3,
+        "day": 20,
+        "hour": 0,
+        "minute": 0,
+        "second": 0,
+        "nanosecond": 0,
+        "timeZoneOffsetSeconds": 0,
+        "timeZoneId": null
+      }
+    ],
+    "saltos": 3
+  }
+]
