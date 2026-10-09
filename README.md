@@ -97,8 +97,7 @@ Caso4_FraudeLink/
     ├── 2_relaciones.sql
     ├── 3_transferencias.sql
     ├── 4_pagos_e_indices.sql
-    ├── Consultas.sql
-    └── README.md
+    └── Consultas.sql
 ```
 
 ## `.env`
@@ -727,39 +726,66 @@ Las consultas del requisito 7 usan el criterio de ciclo de la consulta 3b: una c
 
 # Comparación con el modelo relacional
 
-Para comparar el grafo con un enfoque relacional tradicional, la carpeta `Consultas en SQL/` contiene los mismos datos en tablas de SQL Server y las consultas 2, 3, 6 y 7 escritas con JOINs. El detalle completo está en `Consultas en SQL/README.md`.
+Para comparar el grafo con un enfoque relacional tradicional, la carpeta `Consultas en SQL/` contiene los mismos datos en tablas de SQL Server y las consultas 2, 3, 6 y 7 escritas con JOINs, para compararlas con sus versiones en Cypher de la carpeta `Consultas Neo4j/`.
 
-## Cómo ejecutarla
+## Cómo ejecutarlo (SQL Server Management Studio)
 
-En SQL Server Management Studio, ejecutar en orden y completos (F5):
+1. Ejecutar en orden los archivos de `Consultas en SQL/`, cada uno completo con F5:
+   - `1_tablas_y_nodos.sql`: crea la base `FraudeLink`, las tablas y los nodos. Al final debe dar **12 500**.
+   - `2_relaciones.sql`: carga Posee, Usa_Dispositivo y Conecta_Desde. Debe dar **21 000**.
+   - `3_transferencias.sql`: carga Transfiere_A. Debe dar **30 007**.
+   - `4_pagos_e_indices.sql`: carga Paga_En y crea los índices. Debe dar **12 500 nodos y 66 007 relaciones**.
+2. En `Consultas en SQL/Consultas.sql`, ejecutar una consulta a la vez. El tiempo aparece en la pestaña **Mensajes** como `elapsed time = X ms`.
 
-```text
-1_tablas_y_nodos.sql    -> crea la base FraudeLink, las tablas y los nodos (12 500)
-2_relaciones.sql        -> Posee, Usa_Dispositivo y Conecta_Desde (21 000)
-3_transferencias.sql    -> Transfiere_A (30 007)
-4_pagos_e_indices.sql   -> Paga_En e índices (total: 12 500 nodos y 66 007 relaciones)
-```
+Cada tipo de nodo del grafo es una tabla, y cada tipo de relación es otra tabla con dos llaves foráneas. Las tablas de relación tienen índices en sus llaves, que es lo que tendría un diseño relacional razonable, para que la comparación sea justa.
 
-Luego ejecutar una consulta a la vez desde `Consultas.sql`. El tiempo aparece en la pestaña **Mensajes** como `elapsed time`.
+## Ambos motores dan el mismo resultado
 
-## Resultados
+| Consulta | Resultado (Neo4j y SQL) |
+|---|---|
+| 2a | DIS00771 es el dispositivo con más clientes distintos: 14 |
+| 2b | 10.0.0.79 es la IP con más clientes distintos: 19 |
+| 2c | 47 parejas de cuentas de dueños distintos comparten dispositivo e IP |
+| 3b | 2 ciclos: CTA00001→00002→00003→00001 y CTA00010→00011→00012→00013→00010 |
+| 6a | Ruta cronológica CTA00010→CTA01551→CTA00476→CTA01218 (3 saltos) |
+| 6b | CTA00001 y CTA01544 están a 4 saltos por cualquier vínculo |
+| 7 | Mismo top 20; CTA00013 en primer lugar con 65 puntos |
 
-Ambos motores devuelven los mismos resultados en todas las consultas.
+## Complejidad de las consultas
 
-| Consulta | JOINs en SQL | Neo4j (ms) | SQL Server (ms) |
+| Consulta | JOINs en SQL | Qué complica a SQL |
+|---|---|---|
+| 2a | 1 | Nada: es una agregación simple |
+| 2b | 1 | Nada: es una agregación simple |
+| 2c | 5 | Hay que unir la misma tabla consigo misma por dispositivo y por IP |
+| 3b | 5 + UNION | Una consulta **por cada longitud** de ciclo (3 y 4 saltos). Un ciclo de 5 saltos exige otra consulta más |
+| 6a | 1 (recursivo) | Hace falta una CTE recursiva que arrastre la ruta como texto |
+| 6b | 8 UNION + ciclo WHILE | Los 4 tipos de vínculo están en 4 tablas: hay que juntarlas en una lista y recorrerla nivel por nivel |
+| 7 | 13 | Ciclos, dispositivos, IP y montos son subconsultas separadas que luego se unen |
+
+En Cypher la longitud del recorrido es solo un número (`*3..4`, `*1..6`) y los distintos tipos de relación van en el mismo patrón (`[:TRANSFIERE_A|USA_DISPOSITIVO|CONECTA_DESDE|POSEE]`). En SQL cada salto es un JOIN más y cada tipo de relación es otra tabla.
+
+## Tiempos (ms)
+
+| Consulta | Neo4j | SQL Server | Más rápido |
 |---|---|---|---|
-| 2a | 1 | 5 947 | 79 |
-| 2b | 1 | 1 196 | 58 |
-| 2c | 5 | 2 797 | 1 089 |
-| 3b | 5 + una consulta por cada longitud de ciclo | 4 275 | 1 173 |
-| 6a | consulta recursiva | 573 | 99 |
-| 6b | 8 UNION + recorrido nivel por nivel | **513** | 1 180 |
-| 7 | 13 | 8 238 | 2 532 |
+| 2a | 5 947 | 79 | SQL Server |
+| 2b | 1 196 | 58 | SQL Server |
+| 2c | 2 797 | 1 089 | SQL Server |
+| 3b | 4 275 | 1 173 | SQL Server |
+| 6a | 573 | 99 | SQL Server |
+| 6b | 513 | 1 180 | **Neo4j** |
+| 7 | 8 238 | 2 532 | SQL Server |
 
-- Con este volumen de datos, SQL Server fue más rápido en 6 de las 7 consultas: todo cabe en memoria y los índices hacen baratos los JOIN.
-- Neo4j fue más rápido en la 6b, la que recorre el grafo por cualquier tipo de vínculo. En SQL primero hay que unir las 4 tablas de relaciones en una sola lista de más de 100 000 conexiones.
-- La ventaja del grafo está en escribir y mantener las consultas de varios saltos. En Cypher la longitud del recorrido es un número (`*3..4`); en SQL cada salto es un JOIN más y cada longitud de ciclo es otra consulta.
-- Los tiempos son aproximados: vienen de una sola ejecución en interfaces distintas (Neo4j Browser y SSMS).
+Los tiempos de Neo4j son el valor "completed after" de Neo4j Browser, y están anotados también en los `.txt` de la carpeta `Consultas Neo4j`. Los de SQL Server son el `elapsed time` de la pestaña Mensajes de SSMS (sin contar el tiempo de compilación). En la 6b, que tiene varios pasos, es la suma de todos sus pasos. Los tiempos de SQL Server también están anotados debajo de cada consulta en `Consultas en SQL/Consultas.sql`.
+
+## Lectura de los resultados
+
+- **Con este volumen de datos, SQL Server fue más rápido en 6 de las 7 consultas.** Con 12 500 nodos y 66 007 relaciones todo cabe en memoria, y con índices en las llaves los JOIN son baratos. La ventaja de velocidad del grafo no aparece a esta escala.
+- **La única consulta donde Neo4j ganó fue la 6b (513 ms contra 1 180 ms).** Es justamente la que recorre el grafo por cualquier tipo de vínculo. En SQL hay que juntar primero las 4 tablas de relaciones en una sola lista de más de 100 000 conexiones y después recorrerla nivel por nivel. Neo4j solo sigue las relaciones de los nodos que va visitando.
+- **La diferencia a favor del grafo está en escribir y mantener las consultas de varios saltos.** La 2c necesita 5 JOINs, la 3b necesita una consulta distinta por cada longitud de ciclo y la 7 necesita 13 JOINs. En Cypher cada una es un patrón, y la longitud del recorrido es solo un número (`*3..4`). Un ciclo de 5 saltos en SQL exige escribir otra consulta completa; en Cypher basta cambiar `*3..4` por `*3..5`.
+- **Se espera que la diferencia cambie con más datos o recorridos más largos**, porque cada JOIN adicional multiplica las combinaciones que SQL tiene que revisar, mientras que Neo4j solo sigue las relaciones de los nodos que visita. La 6b ya muestra esa tendencia. Esto no se midió con volúmenes mayores en este proyecto.
+- **Limitaciones:** los tiempos vienen de una sola ejecución en cada interfaz gráfica (Neo4j Browser y SSMS). Los tiempos de Neo4j incluyen el envío de resultados a la interfaz de visualización, y no se midieron en la misma computadora ni con el mismo método que los de SQL Server, así que la comparación de velocidad es aproximada.
 
 ---
 
