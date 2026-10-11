@@ -343,10 +343,8 @@ NEO4J_URI=bolt://localhost:7687
 NEO4J_USERNAME=neo4j
 NEO4J_PASSWORD=cambiar_por_una_contraseña
 ```
-`docker-compose.yml` crea la instancia de Neo4j con esa misma contraseña, así que no hace falta escribirla en ningún otro archivo.
 
-NEO4J_PASSWORD=contraseña
-```
+`docker-compose.yml` crea la instancia de Neo4j con esa misma contraseña, así que no hace falta escribirla en ningún otro archivo.
 
 ## 4. Iniciar Docker Desktop
 
