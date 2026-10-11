@@ -19,12 +19,20 @@ La instancia de Neo4j se ejecuta localmente mediante Docker para facilitar la re
 7. [Centralidad con PageRank](#centralidad-con-pagerank)
 8. [Detección de comunidades con Louvain](#detección-de-comunidades-con-louvain)
 9. [Relación entre PageRank y Louvain](#relación-entre-pagerank-y-louvain)
+<<<<<<< Updated upstream
 10. [Consultas](#consultas)
 11. [Comparación con el modelo relacional](#comparación-con-el-modelo-relacional)
 12. [Pruebas](#pruebas)
 13. [Demostración](#demostración)
 14. [Archivos de modelo](#archivos-de-modelo)
 15. [Tecnologías utilizadas](#tecnologías-utilizadas)
+=======
+10. [Pruebas](#pruebas)
+11. [Demostración](#demostración)
+12. [Consultas](#consultas)
+13. [Archivos de modelo](#archivos-de-modelo)
+14. [Tecnologías utilizadas](#tecnologías-utilizadas)
+>>>>>>> Stashed changes
 
 ---
 
@@ -54,6 +62,7 @@ Las relaciones pueden incluir propiedades como `fecha` y `monto`.
 
 El modelo responde a la necesidad de representar conexiones entre cuentas, dispositivos, IP, comercios y transferencias de una forma que facilite el análisis de patrones de riesgo.
 
+<<<<<<< Updated upstream
 ## Justificación del esquema
 
 Cada decisión del modelo responde a un patrón de fraude que se quiere detectar:
@@ -68,6 +77,8 @@ Cada decisión del modelo responde a un patrón de fraude que se quiere detectar
 | Las relaciones tienen dirección | La dirección indica quién envía y quién recibe. Es necesaria para la ruta del dinero (6a) y para PageRank. Para comunidades (Louvain) se ignora la dirección en la proyección. |
 | `cliente_id`, `cuenta_id`, `dispositivo_id`, `ip_address` y `comercio_id` tienen restricción de unicidad | Evitan nodos duplicados al cargar y aceleran la búsqueda del nodo inicial de cada consulta. |
 
+=======
+>>>>>>> Stashed changes
 ---
 
 # Estructura del proyecto
@@ -75,6 +86,7 @@ Cada decisión del modelo responde a un patrón de fraude que se quiere detectar
 ```text
 Caso4_FraudeLink/
 │
+<<<<<<< Updated upstream
 ├── .env.example                 -> ejemplo de variables de conexión (sin contraseña real)
 ├── Benchmark.ipynb              -> pruebas de desempeño de los algoritmos GDS
 ├── centralidad.ipynb            -> PageRank y Louvain
@@ -98,21 +110,43 @@ Caso4_FraudeLink/
     ├── 3_transferencias.sql
     ├── 4_pagos_e_indices.sql
     └── Consultas.sql
+=======
+├── .env
+├── centralidad.ipynb
+├── consultas_fraudelink_6y7.txt
+├── creacion.datos.R
+├── docker-compose.yml
+├── importar_datos.py
+├── modelo_final.json
+├── neo4j_importer_model_2026-09-28.json
+└── README.md
+>>>>>>> Stashed changes
 ```
 
 ## `.env`
 
 Contiene las variables de conexión utilizadas para acceder a Neo4j.
 
+<<<<<<< Updated upstream
 El archivo `.env` **no se incluye en el repositorio** porque contiene la contraseña. En su lugar se incluye `.env.example`, que se copia y se completa localmente:
+=======
+Ejemplo:
+>>>>>>> Stashed changes
 
 ```env
 NEO4J_URI=bolt://localhost:7687
 NEO4J_USERNAME=neo4j
+<<<<<<< Updated upstream
 NEO4J_PASSWORD=cambiar_por_una_contraseña
 ```
 
 El mismo `.env` lo usan `docker-compose.yml`, `importar_datos.py` y los notebooks, así que la contraseña se define en un solo lugar.
+=======
+NEO4J_PASSWORD=contraseña
+```
+
+Este archivo contiene información local de conexión y no debe almacenarse con credenciales reales en repositorios públicos.
+>>>>>>> Stashed changes
 
 ---
 
@@ -238,6 +272,7 @@ Después de una carga completa se espera obtener:
 
 ---
 
+<<<<<<< Updated upstream
 ## `Consultas Neo4j/`
 
 Contiene las consultas Cypher de los requisitos 2, 3, 6 y 7. Cada carpeta tiene un `.txt` con las consultas comentadas línea por línea y el tiempo de respuesta de cada una, junto con los resultados exportados (`.json`) y las visualizaciones (`.svg`). Ver la sección [Consultas](#consultas).
@@ -250,6 +285,8 @@ Contiene la versión relacional (SQL Server) de los mismos datos y las consultas
 
 ---
 
+=======
+>>>>>>> Stashed changes
 ## `centralidad.ipynb`
 
 Notebook utilizado para realizar los análisis con Neo4j Graph Data Science.
@@ -284,11 +321,14 @@ Para ejecutar el proyecto se requiere:
 - Neo4j Graph Data Science
 - Acceso a una terminal como PowerShell, CMD o terminal integrada de VS Code
 
+<<<<<<< Updated upstream
 Para la comparación con el modelo relacional (opcional) se requiere además:
 
 - SQL Server (por ejemplo, SQL Server Express)
 - SQL Server Management Studio (SSMS)
 
+=======
+>>>>>>> Stashed changes
 También es necesario contar con las siguientes bibliotecas de Python:
 
 ```text
@@ -323,6 +363,7 @@ python -m pip install neo4j python-dotenv graphdatascience pandas matplotlib
 
 ## 3. Configurar `.env`
 
+<<<<<<< Updated upstream
 Copiar el archivo de ejemplo:
 
 ```bash
@@ -336,14 +377,24 @@ copy .env.example .env
 ```
 
 Luego abrir `.env` y cambiar `NEO4J_PASSWORD` por una contraseña propia:
+=======
+Crear o completar el archivo `.env`:
+>>>>>>> Stashed changes
 
 ```env
 NEO4J_URI=bolt://localhost:7687
 NEO4J_USERNAME=neo4j
+<<<<<<< Updated upstream
 NEO4J_PASSWORD=cambiar_por_una_contraseña
 ```
 
 `docker-compose.yml` crea la instancia de Neo4j con esa misma contraseña, así que no hace falta escribirla en ningún otro archivo.
+=======
+NEO4J_PASSWORD=contraseña
+```
+
+La contraseña debe coincidir con la utilizada por la instancia de Neo4j.
+>>>>>>> Stashed changes
 
 ## 4. Iniciar Docker Desktop
 
@@ -697,6 +748,7 @@ direcciones IP compartidas
 
 ---
 
+<<<<<<< Updated upstream
 # Consultas
 
 Las consultas de detección están en la carpeta `Consultas Neo4j/`, una subcarpeta por requisito. Se ejecutan en Neo4j Browser (`http://localhost:7474`) copiando **una consulta a la vez** desde el `.txt`. Cada consulta está comentada línea por línea y tiene anotado su tiempo de respuesta.
@@ -789,6 +841,8 @@ Los tiempos de Neo4j son el valor "completed after" de Neo4j Browser, y están a
 
 ---
 
+=======
+>>>>>>> Stashed changes
 # Pruebas
 
 Las pruebas permiten comprobar que la instancia y los datos fueron cargados correctamente.
@@ -867,6 +921,7 @@ PAGA_EN
 
 También se comprueba desde `centralidad.ipynb` que las proyecciones GDS puedan crearse y que PageRank y Louvain devuelvan resultados válidos.
 
+<<<<<<< Updated upstream
 ## Verificar las consultas
 
 Cada consulta de `Consultas Neo4j/` tiene un resultado esperado (ver la tabla de la sección [Consultas](#consultas)). Por ejemplo, la consulta 3b debe devolver exactamente 2 ciclos y la 7 debe mostrar CTA00013 en el primer lugar con 65 puntos.
@@ -882,6 +937,8 @@ relaciones: 66007
 
 Las consultas de `Consultas.sql` deben devolver los mismos resultados que sus equivalentes en Neo4j.
 
+=======
+>>>>>>> Stashed changes
 ---
 
 # Demostración
@@ -931,6 +988,7 @@ Resultados esperados:
 66 007 relaciones
 ```
 
+<<<<<<< Updated upstream
 ## 4. Mostrar dispositivos e IP compartidos
 
 Ejecutar la consulta 2a de `Consultas Neo4j/Consulta 2/` y mostrar que DIS00771 es usado por 14 clientes distintos.
@@ -948,6 +1006,9 @@ Ejecutar la 6a (visualización) de `Consultas Neo4j/Consultas 6/` para mostrar l
 Ejecutar el ranking de `Consultas Neo4j/Consultas 7/` y luego la visualización V4 del vecindario de CTA00013, la cuenta con mayor riesgo.
 
 ## 8. Mostrar PageRank
+=======
+## 4. Mostrar PageRank
+>>>>>>> Stashed changes
 
 Ejecutar las celdas correspondientes en `centralidad.ipynb`.
 
@@ -959,7 +1020,11 @@ Mostrar:
 - gráfico de las cuentas principales;
 - explicación del significado de PageRank.
 
+<<<<<<< Updated upstream
 ## 9. Mostrar Louvain
+=======
+## 5. Mostrar Louvain
+>>>>>>> Stashed changes
 
 Ejecutar las celdas correspondientes a comunidades.
 
@@ -971,7 +1036,11 @@ Mostrar:
 - ranking de comunidades;
 - gráfico de las comunidades principales.
 
+<<<<<<< Updated upstream
 ## 10. Explicar la relación entre ambos algoritmos
+=======
+## 6. Explicar la relación entre ambos algoritmos
+>>>>>>> Stashed changes
 
 La demostración puede cerrarse explicando:
 
@@ -987,9 +1056,23 @@ identifica las comunidades donde se encuentran
 
 Esto permite combinar análisis individual y análisis estructural del grafo.
 
+<<<<<<< Updated upstream
 ## 11. Comparar contra JOINs relacionales
 
 Mostrar en SSMS una consulta de `Consultas en SQL/Consultas.sql`, por ejemplo la 3b, al lado de su versión en Cypher. Explicar que en SQL cada salto es un JOIN más y cada longitud de ciclo es otra consulta, y presentar la tabla de tiempos de la sección [Comparación con el modelo relacional](#comparación-con-el-modelo-relacional).
+=======
+---
+
+# Consultas
+
+El proyecto contiene consultas Cypher adicionales para analizar relaciones y patrones presentes en el grafo.
+
+Estas consultas se encuentran principalmente en:
+
+```text
+consultas_fraudelink_6y7.txt
+```
+>>>>>>> Stashed changes
 
 ---
 
@@ -1023,5 +1106,9 @@ direcciones
 - R
 - Cypher
 - Pandas
+<<<<<<< Updated upstream
 - Matplotlib
 - SQL Server y SQL Server Management Studio (comparación relacional)
+=======
+- Matplotlib
+>>>>>>> Stashed changes
