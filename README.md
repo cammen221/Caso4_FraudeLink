@@ -86,7 +86,6 @@ Cada decisión del modelo responde a un patrón de fraude que se quiere detectar
 ```text
 Caso4_FraudeLink/
 │
-<<<<<<< Updated upstream
 ├── .env.example                 -> ejemplo de variables de conexión (sin contraseña real)
 ├── Benchmark.ipynb              -> pruebas de desempeño de los algoritmos GDS
 ├── centralidad.ipynb            -> PageRank y Louvain
@@ -110,17 +109,6 @@ Caso4_FraudeLink/
     ├── 3_transferencias.sql
     ├── 4_pagos_e_indices.sql
     └── Consultas.sql
-=======
-├── .env
-├── centralidad.ipynb
-├── consultas_fraudelink_6y7.txt
-├── creacion.datos.R
-├── docker-compose.yml
-├── importar_datos.py
-├── modelo_final.json
-├── neo4j_importer_model_2026-09-28.json
-└── README.md
->>>>>>> Stashed changes
 ```
 
 ## `.env`
