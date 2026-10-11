@@ -1,0 +1,43 @@
+// 2.a. Dispositivos compartidos.
+
+MATCH (cl:Cliente)-[:POSEE]->(cu:Cuenta)-[:USA_DISPOSITIVO]->(d:Dispositivo) // Se busca los clientes que poseen una cuenta. Y de esa cuenta, busca un dispositivo
+WITH d, count(DISTINCT cl) AS n_clientes, collect(DISTINCT cu.cuenta_id) AS cuentas // Agrupa por dispositivos y cuenta los distintos clientes que usan el dispositivo. Además que arma una //lista con los ID's de las cuentas que lo usan.
+
+WHERE n_clientes >= 2 // Deja los dispositivos que cuentan con 2 o más clientes distintos.
+RETURN d.dispositivo_id AS dispositivo, n_clientes, cuentas // Se definen las columnas para posteriormente mostrarlo
+ORDER BY n_clientes DESC // Ordena de mayor a menor la cantidad de clientes. Quiere decir que los usuarios más sospechosos van a salir de primero
+LIMIT 20; // Muestra solo los primeros resultados
+
+// Tiempo de respuesta: 5,947ms
+
+// 2.b. IPs compartidas
+
+MATCH (cl:Cliente)-[:POSEE]->(cu:Cuenta)-[:CONECTA_DESDE]->(ip:IP) // Busca los clientes que son dueños de una cuenta, en la que dicha cuenta se Conecta desde un IP
+WITH ip, count(DISTINCT cl) AS n_clientes, collect(DISTINCT cu.cuenta_id) AS cuentas // Agrupa por IP y cuenta los clientes diferentes que se encuentran conectados desde una IP. Además que // arma una lista con las cuentas que utilizaron esa IP.
+
+WHERE n_clientes >= 2 // Deja solo las IP's que usaron 2 o más clientes distintos.
+RETURN ip.ip_address AS ip, n_clientes, cuentas // Define las columnas para mostrar los resultados
+ORDER BY n_clientes DESC // Ordena de mayor a menor las IP's con más clientes, lo que quiere decir que salen primero las más sospechosas.
+LIMIT 20; //Muestra solo las primeras 20 IP's
+
+// Tiempo de respuesta: 1,196ms
+
+// 2.c. Cuentas que comparten dispositivo y además IP
+
+MATCH (c1:Cliente)-[:POSEE]->(a1:Cuenta)-[:USA_DISPOSITIVO]->(d:Dispositivo)<-[:USA_DISPOSITIVO]-(a2:Cuenta)<-[:POSEE]-(c2:Cliente), // Busca dos cuentas que usan un mismo dispositivo.
+// Quiere decir que a1 es el cliente 1 que es dueño de la cuenta 1 que utiliza el dispositivo d. Pasa lo mismo con el a2.
+
+      (a1)-[:CONECTA_DESDE]->(ip:IP)<-[:CONECTA_DESDE]-(a2)
+WHERE a1.cuenta_id < a2.cuenta_id AND c1 <> c2 //Además, esas dos cuentas definidas, buscan que estén conectadas desde la misma IP. Además evita los duplicados y especidfica que a1 y a2 //sean diferentes
+
+RETURN a1.cuenta_id AS cuenta_1, a2.cuenta_id AS cuenta_2, // Devuelve las columnas de los resultados
+       collect(DISTINCT d.dispositivo_id) AS dispositivos, // Se agrega una lista de los dispositivos que comparten el usuario a1 y el a2
+       collect(DISTINCT ip.ip_address) AS ips // Se agrega una lista de las IP's que comparten el usuario a1 y el a2
+LIMIT 50; // Muestra las primeras 50 parejas de usuarios
+
+// Tiempo de respuesta: 2,797ms
+
+
+
+
+
