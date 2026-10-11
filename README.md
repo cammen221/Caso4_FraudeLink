@@ -68,8 +68,6 @@ Cada decisión del modelo responde a un patrón de fraude que se quiere detectar
 | Las relaciones tienen dirección | La dirección indica quién envía y quién recibe. Es necesaria para la ruta del dinero (6a) y para PageRank. Para comunidades (Louvain) se ignora la dirección en la proyección. |
 | `cliente_id`, `cuenta_id`, `dispositivo_id`, `ip_address` y `comercio_id` tienen restricción de unicidad | Evitan nodos duplicados al cargar y aceleran la búsqueda del nodo inicial de cada consulta. |
 
-=======
->>>>>>> Stashed changes
 ---
 
 # Estructura del proyecto
@@ -343,17 +341,12 @@ Luego abrir `.env` y cambiar `NEO4J_PASSWORD` por una contraseña propia:
 ```env
 NEO4J_URI=bolt://localhost:7687
 NEO4J_USERNAME=neo4j
-
 NEO4J_PASSWORD=cambiar_por_una_contraseña
 ```
-
 `docker-compose.yml` crea la instancia de Neo4j con esa misma contraseña, así que no hace falta escribirla en ningún otro archivo.
 
 NEO4J_PASSWORD=contraseña
 ```
-
-La contraseña debe coincidir con la utilizada por la instancia de Neo4j.
->>>>>>> Stashed changes
 
 ## 4. Iniciar Docker Desktop
 
