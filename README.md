@@ -109,6 +109,7 @@ El archivo `.env` **no se incluye en el repositorio** porque contiene la contras
 ```env
 NEO4J_URI=bolt://localhost:7687
 NEO4J_USERNAME=neo4j
+
 NEO4J_PASSWORD=cambiar_por_una_contraseña
 ```
 
@@ -696,7 +697,6 @@ direcciones IP compartidas
 ```
 
 ---
-
 # Consultas
 
 Las consultas de detección están en la carpeta `Consultas Neo4j/`, una subcarpeta por requisito. Se ejecutan en Neo4j Browser (`http://localhost:7474`) copiando **una consulta a la vez** desde el `.txt`. Cada consulta está comentada línea por línea y tiene anotado su tiempo de respuesta.
@@ -930,7 +930,6 @@ Resultados esperados:
 12 500 nodos
 66 007 relaciones
 ```
-
 ## 4. Mostrar dispositivos e IP compartidos
 
 Ejecutar la consulta 2a de `Consultas Neo4j/Consulta 2/` y mostrar que DIS00771 es usado por 14 clientes distintos.
@@ -1025,3 +1024,4 @@ direcciones
 - Pandas
 - Matplotlib
 - SQL Server y SQL Server Management Studio (comparación relacional)
+
