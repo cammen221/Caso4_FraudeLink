@@ -1,0 +1,4 @@
+Prueba,Tiempo (s)
+1. Proyección del Grafo,0.07
+2. WCC (Write DB),0.046
+3. Louvain (Write DB),6.2125
